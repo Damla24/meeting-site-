@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meet Planner</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Space Grotesk (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       LOADING SCREEN
+  ═══════════════════════════════════════════════ -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-logo">
+      <div class="loading-icon">📅</div>
+      <h1 class="loading-title">Meet Planner</h1>
+    </div>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       APP ROOT
+  ═══════════════════════════════════════════════ -->
+  <div id="app" class="app hidden">
+
+    <!-- ── TOP NAV ── -->
+    <nav class="topnav" id="topnav">
+      <div class="topnav-brand" id="nav-home-btn">
+        <span class="topnav-icon">📅</span>
+        <span class="topnav-name">Meet Planner</span>
+      </div>
+      <div class="topnav-actions">
+        <button class="btn btn-ghost" id="nav-dashboard-btn">Dashboard</button>
+        <button class="btn btn-primary" id="nav-new-meeting-btn">+ New Meeting</button>
+      </div>
+    </nav>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main-content" id="main-content">
+
+      <!-- ─────────────────────────────────────────
+           SCREEN 1: WELCOME
+      ───────────────────────────────────────── -->
+      <section class="screen screen--welcome" id="screen-welcome">
+        <div class="welcome-hero">
+          <div class="welcome-orb welcome-orb--1"></div>
+          <div class="welcome-orb welcome-orb--2"></div>
+          <div class="welcome-badge">✨ Free forever</div>
+          <h1 class="welcome-title">Would you like to<br/><span class="gradient-text">organize a meeting?</span></h1>
+          <p class="welcome-sub">Schedule smarter. No back-and-forth emails. No chaos.</p>
+          <div class="welcome-actions">
+            <button class="btn btn-primary btn-xl" id="welcome-yes-btn">
+              <span>Yes, let's go!</span>
+              <span class="btn-arrow">→</span>
+            </button>
+            <!-- This button will flee from the cursor -->
+            <button class="btn btn-ghost btn-xl fleeing-btn" id="welcome-no-btn" aria-label="No button (try to click it!)">
+              No thanks
+            </button>
+          </div>
+          <p class="welcome-hint" id="fleeing-hint"></p>
+        </div>
+      </section>
+
+      <!-- ─────────────────────────────────────────
+           SCREEN 2: DASHBOARD
+      ───────────────────────────────────────── -->
+      <section class="screen screen--dashboard hidden" id="screen-dashboard">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Your Meetings</h2>
+            <p class="section-sub">Track, manage, and join all your meetings in one place.</p>
+          </div>
+          <button class="btn btn-primary" id="dash-new-btn">+ New Meeting</button>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-row" id="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Meetings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-upcoming">0</div>
+            <div class="stat-label">Upcoming</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-completed">0</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-participants">0</div>
+            <div class="stat-label">Total Participants</div>
+          </div>
+        </div>
+
+        <!-- Meeting cards grid -->
+        <div class="meetings-grid" id="meetings-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state hidden" id="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3 class="empty-title">No meetings yet</h3>
+          <p class="empty-sub">Create your first meeting and invite people to vote on a date.</p>
+          <button class="btn btn-primary" id="empty-new-btn">Create a Meeting</button>
+        </div>
+      </section>
+
+      <!-- ─────────────────────────────────────────
+           SCREEN 3: CREATE MEETING
+      ───────────────────────────────────────── -->
+      <section class="screen screen--create hidden" id="screen-create">
+        <div class="form-container">
+          <button class="back-btn" id="create-back-btn">← Back</button>
+          <h2 class="section-title">Create a Meeting</h2>
+          <p class="section-sub">Fill in the details and invite your team to vote.</p>
+
+          <div class="form-card">
+            <!-- Meeting name -->
+            <div class="form-group">
+              <label class="form-label" for="create-name">Meeting Name <span class="required">*</span></label>
+              <input class="form-input" id="create-name" type="text" placeholder="e.g. Q3 Planning Session" maxlength="80" />
+            </div>
+
+            <!-- Location -->
+            <div class="form-group">
+              <label class="form-label" for="create-location">Location</label>
+              <input class="form-input" id="create-location" type="text" placeholder="e.g. Conference Room B / Zoom" maxlength="120" />
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label" for="create-desc">Description</label>
+              <textarea class="form-input form-textarea" id="create-desc" placeholder="What's this meeting about?" rows="3" maxlength="500"></textarea>
+            </div>
+
+            <!-- Organizer -->
+            <div class="form-group">
+              <label class="form-label" for="create-organizer">Your Name (Organizer) <span class="required">*</span></label>
+              <input class="form-input" id="create-organizer" type="text" placeholder="e.g. Alex Johnson" maxlength="60" />
+            </div>
+
+            <!-- Max participants -->
+            <div class="form-group">
+              <label class="form-label" for="create-max">Max Participants</label>
+              <input class="form-input" id="create-max" type="number" placeholder="e.g. 10 (leave blank for unlimited)" min="2" max="500" />
+            </div>
+
+            <!-- Voting deadline -->
+            <div class="form-group">
+              <label class="form-label" for="create-deadline">Voting Deadline (optional)</label>
+              <input class="form-input" id="create-deadline" type="datetime-local" />
+            </div>
+
+            <!-- Meeting image -->
+            <div class="form-group">
+              <label class="form-label" for="create-image">Meeting Image (optional)</label>
+              <div class="image-upload-area" id="image-upload-area">
+                <input type="file" id="create-image" accept="image/*" class="image-input-hidden" />
+                <div class="image-upload-placeholder" id="image-placeholder">
+                  <span class="image-upload-icon">🖼️</span>
+                  <span>Click or drag to upload an image</span>
+                </div>
+                <img class="image-preview hidden" id="image-preview" alt="Meeting image preview" />
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-full" id="create-submit-btn">
+              Create Meeting &amp; Get Link
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────────────────────────────────────
+           SCREEN 4: MEETING DETAIL / JOIN
+      ───────────────────────────────────────── -->
+      <section class="screen screen--meeting hidden" id="screen-meeting">
+        <div class="meeting-container">
+          <button class="back-btn" id="meeting-back-btn">← Dashboard</button>
+
+          <!-- Meeting header -->
+          <div class="meeting-header-card" id="meeting-header-card">
+            <img class="meeting-hero-img hidden" id="meeting-hero-img" alt="" />
+            <div class="meeting-header-body">
+              <div class="meeting-badge" id="meeting-status-badge">Voting Open</div>
+              <h2 class="meeting-title" id="meeting-title-display"></h2>
+              <div class="meeting-meta" id="meeting-meta"></div>
+            </div>
+          </div>
+
+          <!-- Invitation link -->
+          <div class="invite-card" id="invite-card">
+            <p class="invite-label">🔗 Share this link with participants:</p>
+            <div class="invite-link-row">
+              <input class="form-input invite-input" id="invite-link-display" readonly />
+              <button class="btn btn-primary" id="copy-link-btn">Copy</button>
+            </div>
+          </div>
+
+          <!-- JOIN PANEL (shown when the user is a participant or arriving via link) -->
+          <div class="join-panel" id="join-panel">
+            <h3 class="panel-title">Join this Meeting</h3>
+            <div class="form-group">
+              <label class="form-label" for="join-name">Your Name</label>
+              <input class="form-input" id="join-name" type="text" placeholder="Enter your name" maxlength="60" />
+            </div>
+            <button class="btn btn-primary" id="join-submit-btn">Join &amp; Vote</button>
+          </div>
+
+          <!-- PARTICIPANTS LIST -->
+          <div class="participants-panel" id="participants-panel">
+            <h3 class="panel-title">
+              Participants
+              <span class="participant-count-badge" id="participant-count-badge">0</span>
+            </h3>
+            <div class="participants-list" id="participants-list"></div>
+          </div>
+
+          <!-- VOTING PANEL -->
+          <div class="voting-panel hidden" id="voting-panel">
+            <h3 class="panel-title">📆 Vote for your available dates</h3>
+            <p class="voting-sub" id="voting-sub">Select all dates that work for you, then save.</p>
+
+            <!-- Calendar -->
+            <div class="calendar-wrap">
+              <div class="calendar-nav">
+                <button class="cal-nav-btn" id="cal-prev">‹</button>
+                <span class="cal-month-label" id="cal-month-label"></span>
+                <button class="cal-nav-btn" id="cal-next">›</button>
+              </div>
+              <div class="calendar-grid">
+                <div class="cal-day-name">Su</div>
+                <div class="cal-day-name">Mo</div>
+                <div class="cal-day-name">Tu</div>
+                <div class="cal-day-name">We</div>
+                <div class="cal-day-name">Th</div>
+                <div class="cal-day-name">Fr</div>
+                <div class="cal-day-name">Sa</div>
+                <!-- Days filled by JS -->
+              </div>
+              <div class="calendar-selected-list" id="calendar-selected-list"></div>
+            </div>
+
+            <button class="btn btn-primary btn-full" id="save-votes-btn">Save My Votes</button>
+          </div>
+
+          <!-- RESULT PANEL -->
+          <div class="result-panel hidden" id="result-panel">
+            <div class="result-content" id="result-content"></div>
+          </div>
+
+          <!-- TIEBREAKER PANEL -->
+          <div class="tiebreaker-panel hidden" id="tiebreaker-panel">
+            <h3 class="panel-title">🤝 Tiebreaker Vote</h3>
+            <p class="voting-sub">Multiple dates tied — vote for one:</p>
+            <div class="tiebreaker-options" id="tiebreaker-options"></div>
+            <button class="btn btn-primary btn-full" id="save-tiebreaker-btn">Submit Tiebreaker Vote</button>
+          </div>
+
+          <!-- COUNTDOWN -->
+          <div class="countdown-card hidden" id="countdown-card">
+            <div class="countdown-label">⏱ Meeting starts in</div>
+            <div class="countdown-timer" id="countdown-timer"></div>
+          </div>
+
+          <!-- INVITATION CARD -->
+          <div class="invitation-card-wrap hidden" id="invitation-card-wrap">
+            <h3 class="panel-title">🎉 Meeting Invitation</h3>
+            <div class="invitation-card" id="invitation-card">
+              <div class="inv-bg-glow"></div>
+              <div class="inv-image-row hidden" id="inv-image-row">
+                <img class="inv-image" id="inv-image" alt="" />
+              </div>
+              <div class="inv-emoji">📅</div>
+              <h2 class="inv-title" id="inv-title"></h2>
+              <div class="inv-date-chip" id="inv-date-chip"></div>
+              <div class="inv-details">
+                <div class="inv-detail-row" id="inv-location-row">
+                  <span class="inv-detail-icon">📍</span>
+                  <span id="inv-location"></span>
+                </div>
+                <div class="inv-detail-row">
+                  <span class="inv-detail-icon">👤</span>
+                  <span id="inv-organizer"></span>
+                </div>
+                <div class="inv-detail-row" id="inv-desc-row">
+                  <span class="inv-detail-icon">📝</span>
+                  <span id="inv-desc"></span>
+                </div>
+                <div class="inv-detail-row">
+                  <span class="inv-detail-icon">👥</span>
+                  <span id="inv-participants-summary"></span>
+                </div>
+              </div>
+              <div class="inv-participants-chips" id="inv-participants-chips"></div>
+              <div class="inv-footer">Made with Meet Planner</div>
+            </div>
+            <div class="invitation-actions">
+              <button class="btn btn-primary" id="download-invite-btn">⬇ Download as PNG</button>
+              <button class="btn btn-ghost" id="share-invite-btn">↗ Share</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CONFETTI CANVAS (full-screen overlay)
+  ═══════════════════════════════════════════════ -->
+  <canvas id="confetti-canvas" class="confetti-canvas hidden"></canvas>
+
+  <!-- ═══════════════════════════════════════════════
+       TOAST NOTIFICATIONS
+  ═══════════════════════════════════════════════ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
